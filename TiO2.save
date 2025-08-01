@@ -1,0 +1,29 @@
+from ase.build import bulk, make_supercell
+from ase.io import write
+import numpy as np
+
+# Rutile TiO2 lattice constants
+a = 4.5937  # Å
+c = 2.9581  # Å
+
+# Create rutile unit cell
+rutile = bulk('TiO2', crystalstructure='rutile', a=a, c=c)
+
+# Create 2×2×3 supercell
+P = np.diag([2, 2, 3])
+supercell = make_supercell(rutile, P)
+
+# Print formula before removing O
+print("Before vacancy:", supercell.get_chemical_formula())
+
+# Remove one oxygen atom
+for i, atom in enumerate(supercell):
+    if atom.symbol == 'O':
+        del supercell[i]
+        break
+
+# eqbm formula
+print("After vacancy:", supercell.get_chemical_formula())
+
+write("TiO2_vacancy.xyz", supercell)
+write("TiO2_vacancy.cif", supercell)
